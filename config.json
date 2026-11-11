@@ -1,0 +1,8 @@
+{
+  "blocksize": 16,
+  "cipher": "AES-128",
+  "key": "U2l4dGVlbiBieXRlIGtleQ==",
+  "mode": "CBC",
+  "iv": "SW5pdGlhbFZlY3RvcjEyMw==",
+  "padding": "SF"
+}
