@@ -28,7 +28,11 @@ def main():
 
     print("Sikeres beolvasás")
     encrypting=True
+    output=main_enc_dec(params, encrypting, input)
+    write_output_file('ki.bin', output)
+    print("A kiíratás megtörtént")
 
+def main_enc_dec(params: dict, encrypting: bool, input: bytes) ->bytes:
     if encrypting:
         input=add_padding(input, params['blocksize'], params['padding'])
         print("Padding hozzáadva")
@@ -43,10 +47,6 @@ def main():
 
         output=blocks_to_data(enc_blocks)
         print("A blokkok összefűzése megtörtént")
-        print(output)
-
-        write_output_file('ki.bin', output)
-        print("A kiíratás megtörtént")
     else:
         #valszeg ez nem kell
         input=add_padding(input, params['blocksize'], params['padding'])
@@ -63,9 +63,8 @@ def main():
         output=blocks_to_data(enc_blocks)
         print("A blokkok összefűzése megtörtént")
         print(output)
+    return output
 
-        write_output_file('ki.bin', output)
-        print("A kiíratás megtörtént")
 
 main()
 
