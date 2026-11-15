@@ -48,7 +48,7 @@ def main():
         write_output_file('ki.bin', output)
         print("A kiíratás megtörtént")
     else:
-        //valszeg ez nem kell
+        #valszeg ez nem kell
         input=add_padding(input, params['blocksize'], params['padding'])
         print("Padding hozzáadva")
 

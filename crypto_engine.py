@@ -73,24 +73,36 @@ def blocks_to_data(blocks: list[bytes]) -> bytes:
         data+=i
     return data
 
-
+def xor_bytes(b1: bytes, b2: bytes) -> bytes:
+    if len(b1) != len(b2):
+        raise ValueError(f"A két bájtsorozat hossza nem egyezik! ({len(b1)} vs {len(b2)} bájt)")
+    return bytes([x ^ y for x, y in zip(b1, b2)])
 def encrypt_by_mode(params: dict, P: list[bytes]) -> list[bytes]:
     C=[]
     match params["mode"]:
         case "ECB":
             for i in P:
                 C.append(encrypt(i, params['cipher'], params['key']))
-            return C
-        case "CBC":
-            ...
+        case "CBC": #ugyanolyan hosszuk kell legyenek IV és a blockok
+            C.append(params["IV"])
+            for i in range(len(P)):
+                C.append(encrypt(xor_bytes(P(i), C(i)), params['cipher'], params['key']))
+            #C.pop(0)
         case "CFB":
-            ...
+            C.append(params["IV"])
+            for i in range(len(P)):
+                C.append(xor_bytes(P(i), encrypt(C(i), params['cipher'], params['key'])))
+            #C.pop(0)
         case "OFB":
-            ...
+            O=params["IV"]
+            for i in P:
+                O=encrypt(O, params['cipher'], params['key'])
+                C.append(xor_bytes(O, i))
         case "CTR":
             ...
         case _:
             raise ValueError(f"Ismeretlen működési mód: {params["mode"]}")
+    return C
 
 
 def decrypt_by_mode(params: dict, C: list[bytes]) -> list[bytes]:
@@ -99,17 +111,25 @@ def decrypt_by_mode(params: dict, C: list[bytes]) -> list[bytes]:
         case "ECB":
             for i in C:
                 P.append(decrypt(i, params['cipher'], params['key']))
-            return P
         case "CBC":
-            ...
+            P.append(xor_bytes(params("IV"), decrypt(C[0],params['cipher'], params['key'])))
+            for i in range(1, len(C)):
+                P.append(xor_bytes(C[i-1], decrypt(C[i],params['cipher'], params['key'])))
         case "CFB":
-            ...
+            C.insert(0, params["IV"])
+            for i in range(1, len(C)):
+                P.append(xor_bytes(C[i], encrypt(C[i-1], params['cipher'], params['key'])))
+            C.pop(0) #nem akarom módosítani a decriptálandó tömböt
         case "OFB":
-            ...
+            O=params["IV"]
+            for i in C:
+                O=encrypt(O, params['cipher'], params['key'])
+                P.append(xor_bytes(O, i))
         case "CTR":
             ...
         case _:
                     raise ValueError(f"Ismeretlen működési mód: {params["mode"]}")
+    return P
         
     
 
