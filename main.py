@@ -55,6 +55,7 @@ def main_enc_dec(params: dict, encrypting: bool, input: bytes) ->bytes:
         blocks=data_to_blocks(input, params['blocksize'])
         print("Szöveg blokkokra bontva:")
         print(blocks)
+
         
         enc_blocks=decrypt_by_mode(params, blocks)
         print("A blokkokat titkosítva:")
@@ -64,7 +65,6 @@ def main_enc_dec(params: dict, encrypting: bool, input: bytes) ->bytes:
         print("A blokkok összefűzése megtörtént")
         print(output)
     return output
-
 
 main()
 
