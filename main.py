@@ -18,6 +18,7 @@ def main():
 
     except ValueError as hiba:
         print(f"HIBA: {hiba}")
+        return
 
     try:
         print(f"Fájl beolvasása:...")

@@ -18,8 +18,8 @@ def test_encryption_decryption_roundtrip(data_1mb, cipher_algo, mode):
         "cipher": cipher_algo,
         "mode": mode,
         "padding": "SF",
-        "key": b'12345678',
-        "iv": b'87654321'
+        "key": b'1234567890123456',
+        "iv": b'6543210987654321'
     }
 
     encrypted = main_enc_dec(config, True, data_1mb)
@@ -31,8 +31,8 @@ def test_encryption_decryption_roundtrip(data_1mb, cipher_algo, mode):
 # AES128 teszt
 @pytest.mark.parametrize("mode_name", ["ECB", "CBC", "CFB", "OFB", "CTR"])
 def test_against_standard_library(data_1mb, mode_name):
-    key = b'12345678'
-    iv = b'87654321'
+    key = b'1234567890123456'
+    iv = b'6543210987654321'
     
     test_data = data_1mb[:1024] # Hogy gyorsabb legyen, csak 1KB-t nézünk
     
@@ -44,11 +44,13 @@ def test_against_standard_library(data_1mb, mode_name):
         cipher = Cipher(algorithms.AES128(key), modes.CFB(iv), backend=default_backend())
     elif mode_name == "OFB":
         cipher = Cipher(algorithms.AES128(key), modes.OFB(iv), backend=default_backend())
+    elif mode_name == "CTR":
+        cipher = Cipher(algorithms.AES128(key), modes.CTR(iv), backend=default_backend())
     
     encryptor = cipher.encryptor()
     official_encrypted = encryptor.update(test_data) + encryptor.finalize()
 
-    config = {"blocksize": 16, "cipher": "AES128", "mode": mode_name, "padding": "ZERO", "key": key, "iv": iv}
-    my_encrypted = main_enc_dec(config, True, data_1mb)
+    config = {"blocksize": 16, "cipher": "AES-128", "mode": mode_name, "padding": "ZERO", "key": key, "iv": iv}
+    my_encrypted = main_enc_dec(config, True, test_data)
     
     assert my_encrypted == official_encrypted

@@ -51,7 +51,7 @@ def remove_padding(padded_bytes: bytes, blocksize: int, padding_mode: str) -> by
             return padded_bytes[:-pad_len]
 
         case _:
-                    raise ValueError(f"Ismeretlen padding mód: {mode}")
+                    raise ValueError(f"Ismeretlen padding mód")
 
 def vigenere_bin_encrypt_block(block: bytes, key: bytes) -> bytes:
     return bytes([(block[i] + key[i % len(key)]) % 256 for i in range(len(block))])
@@ -135,7 +135,7 @@ def encrypt_by_mode(params: dict, P: list[bytes], encrypt_fn: Callable[[bytes, b
                 keystream = encrypt_fn(counter_block, params['key'])
                 C.append(xor_bytes(block, keystream))
         case _:
-            raise ValueError(f"Ismeretlen működési mód: {params["mode"]}")
+            raise ValueError(f"Ismeretlen működési mód: {params['mode']}")
     return C
 
 
@@ -146,7 +146,7 @@ def decrypt_by_mode(params: dict, C: list[bytes], encrypt_fn: Callable[[bytes, b
             for i in C:
                 P.append(decrypt_fn(i, params['key']))
         case "CBC":
-            P.append(xor_bytes(params("iv"), decrypt_fn(C[0], params['key'])))
+            P.append(xor_bytes(params["iv"], decrypt_fn(C[0], params['key'])))
             for i in range(1, len(C)):
                 P.append(xor_bytes(C[i-1], decrypt_fn(C[i], params['key'])))
         case "CFB":
@@ -165,7 +165,7 @@ def decrypt_by_mode(params: dict, C: list[bytes], encrypt_fn: Callable[[bytes, b
                 keystream = encrypt_fn(counter_block, params["key"])
                 P.append(xor_bytes(block, keystream))
         case _:
-                    raise ValueError(f"Ismeretlen működési mód: {params["mode"]}")
+                    raise ValueError(f"Ismeretlen működési mód: {params['mode']}")
     return P
         
     

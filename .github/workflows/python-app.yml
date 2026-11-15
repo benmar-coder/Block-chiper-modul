@@ -32,4 +32,4 @@ jobs:
     # 4. Lefuttatja az 1MB-os integrációs teszteket
     - name: Pytest tesztek futtatása
       run: |
-        pytest tests/ -v
+        python -m pytest tests/ -v
