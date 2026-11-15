@@ -45,7 +45,12 @@ def load_cipher_config(config_path: str, schema_path: str) -> dict:
     # +1 Extra logikai ellenőrzés: ha nem ECB módban vagyunk, muszáj lennie IV-nek
     if mode != "ECB" and iv_bytes is None:
         raise ValueError(f"Az '{mode}' működési módhoz kötelező IV-t (kezdeti vektort) megadni a configban!")
+    if mode != "ECB" and len(iv_bytes) != blocksize:
+            raise ValueError(f"Az IV hossza ({len(iv_bytes)} bájt) meg kell egyezzen a blokkmérettel ({blocksize} bájt)!")
 
+    if cipher_name == "AES-128":
+        if blocksize != 16 or len(key_bytes) != 16:
+            raise ValueError("AES-128 esetén a blocksize és a kulcs hossza is pontosan 16 bájt kell legyen!")
     # 6. Visszaadjuk az összes szükséges paramétert egy tiszta szótár (dictionary) formájában
     return {
         "blocksize": blocksize,

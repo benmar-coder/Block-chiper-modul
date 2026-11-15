@@ -33,40 +33,42 @@ def main():
     print("A kiíratás megtörtént")
 
 def main_enc_dec(params: dict, encrypting: bool, input: bytes) ->bytes:
+
+    enc_fn, dec_fn = get_cipher_functions(params['cipher'])
     if encrypting:
         input=add_padding(input, params['blocksize'], params['padding'])
         print("Padding hozzáadva")
         
         blocks=data_to_blocks(input, params['blocksize'])
         print("Szöveg blokkokra bontva:")
-        print(blocks)
+        #print(blocks)
 
-        enc_blocks=encrypt_by_mode(params, blocks)
+        enc_blocks=encrypt_by_mode(params, blocks, enc_fn)
         print("A blokkokat titkosítva:")
-        print(enc_blocks)
+        #print(enc_blocks)
 
         output=blocks_to_data(enc_blocks)
         print("A blokkok összefűzése megtörtént")
     else:
-        #valszeg ez nem kell
-        input=add_padding(input, params['blocksize'], params['padding'])
-        print("Padding hozzáadva")
 
         blocks=data_to_blocks(input, params['blocksize'])
         print("Szöveg blokkokra bontva:")
-        print(blocks)
+        #print(blocks)
 
         
-        enc_blocks=decrypt_by_mode(params, blocks)
+        enc_blocks=decrypt_by_mode(params, blocks, enc_fn, dec_fn)
         print("A blokkokat titkosítva:")
-        print(enc_blocks)
+        #print(enc_blocks)
 
         output=blocks_to_data(enc_blocks)
+
+        output=remove_padding(output, params['blocksize'], params['padding'])
         print("A blokkok összefűzése megtörtént")
-        print(output)
+        #print(output)
     return output
 
-main()
+if __name__ == "__main__":
+    main()
 
     
 

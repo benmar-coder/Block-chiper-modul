@@ -11,7 +11,7 @@ def data_1mb():
 
 #Dekódolás, kódolás
 @pytest.mark.parametrize("cipher_algo", ["AES-128", "VIGENERE-BIN"])
-@pytest.mark.parametrize("mode", ["ECB", "CBC", "CFB", "OFB"]) #CTR majd kell
+@pytest.mark.parametrize("mode", ["ECB", "CBC", "CFB", "OFB", "CTR"]) 
 def test_encryption_decryption_roundtrip(data_1mb, cipher_algo, mode):
     config = {
         "blocksize": 16,
@@ -29,7 +29,7 @@ def test_encryption_decryption_roundtrip(data_1mb, cipher_algo, mode):
     assert decrypted == data_1mb
 
 # AES128 teszt
-@pytest.mark.parametrize("mode_name", ["ECB", "CBC", "CFB", "OFB"])
+@pytest.mark.parametrize("mode_name", ["ECB", "CBC", "CFB", "OFB", "CTR"])
 def test_against_standard_library(data_1mb, mode_name):
     key = b'12345678'
     iv = b'87654321'
